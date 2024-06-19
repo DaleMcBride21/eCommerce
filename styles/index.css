@@ -60,11 +60,11 @@ main {
     grid-column: 1/2;
 }
 
-/* card container */
-
 #cardContainer {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 5px; /* Add gap between cards */
+    align-items: start; /* Align items to the start of the grid tracks */
 }
 
 /* card styling */
@@ -72,9 +72,8 @@ main {
 .card {
     background-color: #f0f0f0; /* light gray background */
     max-width: 300px;
-    min-width: 300px;
-    max-height: 300px;
-    margin: 10px;
+    height: auto;
+    margin: 5px;
     border-radius: .5rem;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* softer inset shadow */
     text-align: center;
@@ -100,3 +99,4 @@ main {
 .card h4 a:hover {
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* softer inset shadow on hover */
 }
+

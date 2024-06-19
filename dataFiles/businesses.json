@@ -1,0 +1,30 @@
+[
+    {
+        "title": "Otto Card",
+        "description": "This is the description for card 1.",
+        "image": "https://www.shutterstock.com/image-photo/otto-wyoming-usa-on-map-260nw-790718179.jpg",
+        "address": "212 Main St, Otto, WY 82434",
+        "type": ""
+    },
+    {
+        "title": "Burlington Card",
+        "description": "This is the description for card 2.",
+        "image": "",
+        "address": "121 Cedar Ave, Burlington, WY 82411",
+        "type": ""
+    },
+    {
+        "title": "Church Card",
+        "description": "This is the description for card 3.",
+        "image": "",
+        "address": "114 Cedar Ave, Burlington, WY 82411",
+        "type": ""
+    },
+    {
+        "title": "Random",
+        "description": "This is the description for card 4.",
+        "image": "",
+        "address": "1625 Alger Ave, Cody, WY 82414",
+        "type": ""
+    }
+]

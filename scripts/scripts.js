@@ -1,14 +1,10 @@
 let map;
-
 let markers = [];
-const products = [
-    { title: 'Otto Card', description: 'This is the description for card 1.', image: "", address: "212 Main St, Otto, WY 82434", type: "" },
-    { title: 'Burlington Card', description: 'This is the description for card 2.', image: "", address: "121 Cedar Ave, Burlington, WY 82411", type: "" },
-    { title: 'Church Card', description: 'This is the description for card 3.', image: "", address: "114 Cedar Ave, Burlington, WY 82411", type: "" },
-    { title: 'Random', description: 'This is the description for card 4.', image: "", address: "1625 Alger Ave, Cody, WY 82414", type: "" }
-];
+let businesses = [];
 
 async function initMap() {
+    await loadBusinesses(); // Load businesses from JSON file
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
@@ -27,7 +23,7 @@ async function initMap() {
                     ]
                 };
                 map = new google.maps.Map(document.getElementById("map"), mapOptions);
-                await addMarkers(products);
+                await addMarkers(businesses);
                 google.maps.event.addListener(map, 'bounds_changed', updateVisibleCards);
             },
             (error) => {
@@ -57,12 +53,24 @@ function initializeMapWithDefaultLocation() {
         ]
     };
     map = new google.maps.Map(document.getElementById("map"), mapOptions);
-    addMarkers(products);
+    addMarkers(businesses);
     google.maps.event.addListener(map, 'bounds_changed', updateVisibleCards);
 }
 
-async function addMarkers(products) {
-    for (const product of products) {
+async function loadBusinesses() {
+    try {
+        const response = await fetch('../dataFiles/businesses.json');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        businesses = await response.json();
+    } catch (error) {
+        console.error('Failed to load businesses:', error);
+    }
+}
+
+async function addMarkers(businesses) {
+    for (const product of businesses) {
         const position = await geocodeAddress(product.address);
         if (position) {
             const marker = new google.maps.Marker({
@@ -109,10 +117,10 @@ function createCard(product) {
     return card;
 }
 
-function displayCards(products) {
+function displayCards(businesses) {
     const cardContainer = document.getElementById('cardContainer');
     cardContainer.innerHTML = '';
-    products.forEach(product => {
+    businesses.forEach(product => {
         const card = createCard(product);
         cardContainer.appendChild(card);
     });
@@ -130,7 +138,7 @@ async function addNewMarker() {
     const description = document.getElementById('markerDescription').value;
     const address = document.getElementById('markerAddress').value;
     const newProduct = { title, description, image: "", address, type: "" };
-    products.push(newProduct);
+    businesses.push(newProduct);
     const position = await geocodeAddress(address);
     if (position) {
         const marker = new google.maps.Marker({
