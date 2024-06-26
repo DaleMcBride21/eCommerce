@@ -1,44 +1,26 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
+const submitForm = document.querySelector(".form")
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+submitForm.addEventListener('submit', event => {
+    event.preventDefault();
 
-// Middleware to parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
-// Middleware to parse application/json
-app.use(bodyParser.json());
-
-// Serve static files (CSS, images, etc.)
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Endpoint to handle form submission
-app.post('/submit-form', (req, res) => {
-    const formData = req.body;
-
-    // Read existing JSON data from file
-    let rawData = fs.readFileSync('businesses.json');
-    let businesses = JSON.parse(rawData);
-
-    // Append new data to businesses array
-    businesses.push({
-        title: formData.text1,
-        description: formData.text4,
-        image: formData.imageLink,
-        address: `${formData.address}, ${formData.city}, ${formData.state} ${formData.zip}`,
-        type: ''  // Assuming you may want to populate this later
+    const formData = new FormData(this);
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
     });
 
-    // Write updated data back to JSON file
-    fs.writeFileSync('businesses.json', JSON.stringify(businesses, null, 2));
-
-    // Respond with success message
-    res.send('Form data saved successfully.');
-});
-
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    fetch('/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('Success:', result);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 });
