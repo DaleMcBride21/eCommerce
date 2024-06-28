@@ -3,7 +3,7 @@ let markers = [];
 let businesses = [];
 
 async function initMap() {
-    await loadBusinesses(); // Load businesses from JSON file
+    await loadBusinesses();
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -12,15 +12,7 @@ async function initMap() {
                 const mapOptions = {
                     center: { lat: latitude, lng: longitude },
                     zoom: 14,
-                    styles: [
-                        { featureType: "poi.business", stylers: [{ visibility: "off" }] },
-                        { featureType: "poi.attraction", stylers: [{ visibility: "off" }] },
-                        { featureType: "poi.place_of_worship", stylers: [{ visibility: "off" }] },
-                        { featureType: "poi.sports_complex", stylers: [{ visibility: "off" }] },
-                        { featureType: "poi.school", stylers: [{ visibility: "off" }] },
-                        { featureType: "poi.medical", stylers: [{ visibility: "off" }] },
-                        { featureType: "poi.government", stylers: [{ visibility: "off" }] },
-                    ]
+                    styles: getMapStyles()
                 };
                 map = new google.maps.Map(document.getElementById("map"), mapOptions);
                 await addMarkers(businesses);
@@ -28,13 +20,27 @@ async function initMap() {
             },
             (error) => {
                 console.error("Error getting location: ", error);
+                alert("Geolocation permission denied. Using default location.");
                 initializeMapWithDefaultLocation();
             }
         );
     } else {
         console.error("Geolocation is not supported by this browser.");
+        alert("Geolocation is not supported by this browser.");
         initializeMapWithDefaultLocation();
     }
+}
+
+function getMapStyles() {
+    return [
+        { featureType: "poi.business", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.attraction", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.place_of_worship", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.sports_complex", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.school", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.medical", stylers: [{ visibility: "off" }] },
+        { featureType: "poi.government", stylers: [{ visibility: "off" }] },
+    ];
 }
 
 function initializeMapWithDefaultLocation() {
@@ -42,15 +48,7 @@ function initializeMapWithDefaultLocation() {
     const mapOptions = {
         center: defaultLocation,
         zoom: 8,
-        styles: [
-            { featureType: "poi.business", stylers: [{ visibility: "off" }] },
-            { featureType: "poi.attraction", stylers: [{ visibility: "off" }] },
-            { featureType: "poi.place_of_worship", stylers: [{ visibility: "off" }] },
-            { featureType: "poi.sports_complex", stylers: [{ visibility: "off" }] },
-            { featureType: "poi.school", stylers: [{ visibility: "off" }] },
-            { featureType: "poi.medical", stylers: [{ visibility: "off" }] },
-            { featureType: "poi.government", stylers: [{ visibility: "off" }] },
-        ]
+        styles: getMapStyles()
     };
     map = new google.maps.Map(document.getElementById("map"), mapOptions);
     addMarkers(businesses);
@@ -59,13 +57,14 @@ function initializeMapWithDefaultLocation() {
 
 async function loadBusinesses() {
     try {
-        const response = await fetch('../dataFiles/businesses.json');
+        const response = await fetch('/dataFiles/businesses.json');
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error(`Network response was not ok: ${response.statusText}`);
         }
         businesses = await response.json();
     } catch (error) {
         console.error('Failed to load businesses:', error);
+        alert('Failed to load businesses. Check console for details.');
     }
 }
 
@@ -132,7 +131,6 @@ function updateVisibleCards() {
     displayCards(visibleProducts);
 }
 
-// adds new markers to the map
 async function addNewMarker() {
     const title = document.getElementById('markerTitle').value;
     const description = document.getElementById('markerDescription').value;
