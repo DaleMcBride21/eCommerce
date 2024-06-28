@@ -57,7 +57,7 @@ function initializeMapWithDefaultLocation() {
 
 async function loadBusinesses() {
     try {
-        const response = await fetch('/dataFiles/businesses.json');
+        const response = await fetch('../dataFiles/businesses.json');
         if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.statusText}`);
         }
