@@ -107,11 +107,13 @@ function createCard(product) {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-        <img src="${product.image}" alt="${product.title}" loading="lazy">
-        <h3>${product.title}</h3>
-        <p><b>Description:</b> ${product.description}</p>
-        <p><b>Address:</b> ${product.address}</p>
-        <h4><a href="bought-item.html">BUY NOW</a></h4>
+        <div>
+            <img src="${product.image}" alt="${product.title}" loading="lazy">
+            <h3>${product.title}</h3>
+            <p><b>Description:</b> ${product.description}</p>
+            <p><b>Address:</b> ${product.address}</p>
+            <h4><a href="bought-item.html">BUY NOW</a></h4>
+        </div>
     `;
     return card;
 }
